@@ -14,6 +14,8 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { errorHandler } = require('./middleware/errorHandler');
+const dotenv = require('dotenv');
+dotenv.config(); // Load environment variables
 const app = express();
 const prisma = new PrismaClient();
 // Middleware
