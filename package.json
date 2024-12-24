@@ -1,0 +1,42 @@
+{
+  "name": "veg_fruit_store_backend_defaultorganization_20241224022319",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firasguendouz/veg_fruit_store_backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/firasguendouz/veg_fruit_store_backend/issues"
+  },
+  "homepage": "https://github.com/firasguendouz/veg_fruit_store_backend#readme",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "prisma": "^6.1.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
+  }
+}
