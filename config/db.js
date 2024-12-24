@@ -1,17 +1,17 @@
 // config/db.js
 
-import { PrismaClient } from '@prisma/client';
+import mongoose from 'mongoose';
 
-// Initialize Prisma Client
-const prisma = new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn'] : ['warn'],
-    errorFormat: 'pretty',
-});
+// Database Connection URI
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/your-database-name';
 
-// Database Connection Test
+// Database Connection Function
 export const connectDB = async () => {
     try {
-        await prisma.$connect();
+        await mongoose.connect(MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
         console.log('✅ Database connected successfully');
     } catch (error) {
         console.error('❌ Database connection failed:', error.message);
@@ -21,10 +21,23 @@ export const connectDB = async () => {
 
 // Graceful Shutdown for Database
 process.on('SIGINT', async () => {
-    await prisma.$disconnect();
+    await mongoose.connection.close();
     console.log('🛑 Database connection closed');
     process.exit(0);
 });
 
-// Export Prisma Client for Global Use
-export default prisma;
+// Log Database Connection Events
+mongoose.connection.on('connected', () => {
+    console.log('🟢 Mongoose connected to the database');
+});
+
+mongoose.connection.on('error', (err) => {
+    console.error(`🔴 Mongoose connection error: ${err}`);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('🟡 Mongoose disconnected from the database');
+});
+
+// Export mongoose for global use
+export default mongoose;

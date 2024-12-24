@@ -1,26 +1,22 @@
 // models/Admin.js
 
-import { PrismaClient } from '@prisma/client';
+import mongoose from 'mongoose';
 
-const prisma = new PrismaClient();
-
-const Admin = prisma.$extends({
-  model: {
-    admin: {
-      schema: `
-        model Admin {
-          id           String   @id @default(uuid())
-          email        String   @unique @db.VarChar(255)
-          password     String   @db.VarChar(255)
-          firstName    String   @db.VarChar(50)
-          lastName     String   @db.VarChar(50)
-          role         String   @default("superadmin") // Possible: superadmin, moderator
-          createdAt    DateTime @default(now())
-          updatedAt    DateTime @updatedAt
-        }
-      `
-    }
-  }
+const AdminSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true, maxlength: 255 },
+  password: { type: String, required: true, maxlength: 255 },
+  firstName: { type: String, required: true, maxlength: 50 },
+  lastName: { type: String, required: true, maxlength: 50 },
+  role: { type: String, default: 'superadmin', enum: ['superadmin', 'moderator'] },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
+
+AdminSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+const Admin = mongoose.model('Admin', AdminSchema);
 
 export default Admin;

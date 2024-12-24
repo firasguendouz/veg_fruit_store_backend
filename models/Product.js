@@ -1,29 +1,25 @@
 // models/Product.js
 
-import { PrismaClient } from '@prisma/client';
+import mongoose from 'mongoose';
 
-const prisma = new PrismaClient();
-
-const Product = prisma.$extends({
-  model: {
-    product: {
-      schema: `
-        model Product {
-          id          String   @id @default(uuid())
-          sku         String   @unique @db.VarChar(100)
-          name        String   @db.VarChar(100)
-          category    String   @db.VarChar(50)
-          quantity    Int      @default(0)
-          unitPrice   Float    @default(0.0)
-          pricePer100g Float?   // Optional, for items sold by weight
-          status      String   @default("active") // Possible values: active, blocked
-          description String?  @db.Text
-          createdAt   DateTime @default(now())
-          updatedAt   DateTime @updatedAt
-        }
-      `
-    }
-  }
+const ProductSchema = new mongoose.Schema({
+  sku: { type: String, required: true, unique: true, maxlength: 100 },
+  name: { type: String, required: true, maxlength: 100 },
+  category: { type: String, required: true, maxlength: 50 },
+  quantity: { type: Number, default: 0 },
+  unitPrice: { type: Number, default: 0.0 },
+  pricePer100g: { type: Number }, // Optional, for items sold by weight
+  status: { type: String, default: 'active', enum: ['active', 'blocked'] },
+  description: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
+
+ProductSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+const Product = mongoose.model('Product', ProductSchema);
 
 export default Product;

@@ -2,8 +2,13 @@
 
 import app from './app.js';
 import { connectDB } from './config/db.js';
+import dotenv from 'dotenv';
 import env from './config/env.js';
 import http from 'http';
+
+// Import dotenv using ES module syntax
+
+dotenv.config();  // Load environment variables from .env file
 
 // Start the Server
 const server = http.createServer(app);
@@ -17,6 +22,11 @@ connectDB().then(() => {
 }).catch((err) => {
     console.error('❌ Database connection failed:', err.message);
     process.exit(1);
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
 });
 
 // Graceful Shutdown

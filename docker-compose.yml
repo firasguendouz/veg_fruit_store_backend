@@ -11,31 +11,44 @@ services:
       - "3000:3000"  # Expose app on port 3000
     environment:
       - NODE_ENV=production
-      - DB_HOST=db  # PostgreSQL service name in Docker Compose
+      - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=example
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:example@db:5432/veg_fruit_store
       - DB_NAME=veg_fruit_store
-    volumes:
-      - .:/usr/src/app  # Synchronize local code with container
+      - JWT_SECRET=${JWT_SECRET}  # Referencing environment variable from .env file
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}  # Referencing environment variable from .env file
     depends_on:
-      - db  # Make sure the app waits for the db to be ready
+      - db
     networks:
       - veg_fruit_network
-    command: ["npm", "run", "start"]  # Start the app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      retries: 3
+      start_period: 5s
+      timeout: 5s
 
   # PostgreSQL database container
   db:
-    image: postgres:13  # Use PostgreSQL 13
+    image: postgres:13
     container_name: veg_fruit_store_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: example
       POSTGRES_DB: veg_fruit_store
     volumes:
-      - veg_fruit_store_db_data:/var/lib/postgresql/data  # Persist data across container restarts
+      - veg_fruit_store_db_data:/var/lib/postgresql/data
     networks:
       - veg_fruit_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 30s
+      retries: 3
+      start_period: 5s
+      timeout: 5s
 
 networks:
   veg_fruit_network:

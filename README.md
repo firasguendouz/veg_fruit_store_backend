@@ -62,3 +62,7 @@
 ├── package.json        # Project dependencies and scripts
 ├── .env               # Environment variables
 └── README.md           # Project documentation
+
+
+clean after all 
+docker-compose down --volumes --remove-orphans

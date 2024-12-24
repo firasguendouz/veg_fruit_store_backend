@@ -4,22 +4,21 @@ FROM node:18
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json (or yarn.lock) into the container
+# Copy package.json and package-lock.json into the container
 COPY package*.json ./
-
+# Copy the Prisma folder into the container
+COPY prisma ./prisma
 # Install dependencies
 RUN npm install
+
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Copy the rest of the application code into the container
+COPY . .
 
 # Expose the port your app will run on
 EXPOSE 3000
 
-# Set environment variables for the app (Optional)
-ENV NODE_ENV=production
-ENV DB_HOST=db
-ENV DB_PORT=5432
-ENV DB_USER=postgres
-ENV DB_PASSWORD=example
-ENV DB_NAME=veg_fruit_store
-
 # Command to run the app
-CMD ["npx", "nodemon", "index.js"]
+CMD ["npm", "run", "start"]
