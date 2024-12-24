@@ -14,8 +14,10 @@ const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const { errorHandler } = require('./middleware/errorHandler');
+const { validateEnvVariables } = require('./utils/config');
 const dotenv = require('dotenv');
 dotenv.config(); // Load environment variables
+validateEnvVariables(); // Validate environment variables
 const app = express();
 const prisma = new PrismaClient();
 // Middleware
@@ -37,7 +39,16 @@ app.use(errorHandler);
 app.get('/health', (req, res) => res.status(200).send('OK'));
 // Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+// Handle graceful shutdown
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(async () => {
+    console.log('HTTP server closed');
+    await prisma.$disconnect();
+    process.exit(0);
+  });
 });
 module.exports = app;
