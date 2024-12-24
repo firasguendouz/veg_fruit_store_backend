@@ -1,20 +1,22 @@
 // services/adminService.js
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/db.js';
 
-const prisma = new PrismaClient();
+// Import Prisma instance
 
-// Get All Users
+// Fetch all users
 export const getAllUsers = async () => {
-    return await prisma.user.findMany();
+    return await prisma.user.findMany();  // Using Prisma to fetch users from the database
 };
 
-// Get User by ID
+// Fetch user by ID
 export const getUserById = async (id) => {
-    return await prisma.user.findUnique({ where: { id } });
+    return await prisma.user.findUnique({
+        where: { id },
+    });
 };
 
-// Update User Role
+// Update user role
 export const updateUserRole = async (id, role) => {
     return await prisma.user.update({
         where: { id },
@@ -22,10 +24,15 @@ export const updateUserRole = async (id, role) => {
     });
 };
 
-// Get System Analytics (Example: Count Orders)
+// Get system analytics (e.g., total users, orders, etc.)
 export const getSystemAnalytics = async () => {
-    const userCount = await prisma.user.count();
-    const orderCount = await prisma.order.count();
+    const totalUsers = await prisma.user.count();
+    const totalOrders = await prisma.order.count();
+    const totalProducts = await prisma.product.count();
 
-    return { userCount, orderCount };
+    return {
+        totalUsers,
+        totalOrders,
+        totalProducts,
+    };
 };

@@ -51,3 +51,6 @@ export const getAllOrders = async () => {
 export const updateOrderStatus = async (id, status) => {
     return await prisma.order.update({
         where: { id },
+        data: { orderStatus: status },
+    });
+};

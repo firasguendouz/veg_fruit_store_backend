@@ -2,7 +2,7 @@
 
 import { AppError, handleErrorResponse } from '../utils/errorHandler.js';
 import { generateRefreshToken, generateToken } from '../utils/generateToken.js';
-import { loginUser, registerUser } from '../services/authService.js';
+import { loginUser, registerUser } from '../services/authService.js'; // Make sure registerUser is imported here
 
 /**
  * @desc   Register a new user
@@ -17,7 +17,7 @@ export const register = async (req, res) => {
             throw new AppError('All fields are required', 400);
         }
 
-        const { user, token } = await registerUser({ email, password, firstName, lastName });
+        const { user, token } = await registerUser({ email, password, firstName, lastName }); // Use registerUser here
 
         res.status(201).json({
             success: true,
@@ -34,6 +34,8 @@ export const register = async (req, res) => {
         handleErrorResponse(res, error);
     }
 };
+
+// Other functions remain the same...
 
 /**
  * @desc   Authenticate user & get token
