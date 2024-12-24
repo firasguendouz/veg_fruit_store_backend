@@ -1,6 +1,4 @@
-'''
-Main entry point for the Express.js server.
-'''
+
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -50,5 +48,9 @@ process.on('SIGTERM', async () => {
     await prisma.$disconnect();
     process.exit(0);
   });
+});
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 module.exports = app;
